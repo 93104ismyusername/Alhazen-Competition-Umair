@@ -1,0 +1,1574 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>To-Do List Ramadhan - Tracker Ibadah</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #1a5f48;
+            --secondary-color: #2d8a6e;
+            --accent-color: #f4a261;
+            --gold-color: #d4af37;
+            --light-bg: #f8f9fa;
+            --dark-text: #2d3436;
+            --light-text: #636e72;
+            --success-color: #27ae60;
+            --warning-color: #f39c12;
+            --error-color: #e74c3c;
+            --white: #ffffff;
+            --shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.15);
+            --primary-green: #1a5f3a;
+            --gold: #f1c40f;
+            --gold-dark: #f39c12;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: var(--dark-text);
+            line-height: 1.6;
+        }
+
+        /* Navigation Styles */
+        header.nav-header {
+            background: linear-gradient(135deg, var(--gold) 0%, var(--gold-dark) 100%);
+            box-shadow: var(--shadow-lg);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        nav {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            text-decoration: none;
+            color: var(--primary-green);
+        }
+
+        .logo-icon {
+            font-size: 2rem;
+        }
+
+        .logo-text {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 0.5rem;
+            align-items: center;
+        }
+
+        .nav-menu li a {
+            display: block;
+            padding: 0.75rem 1.25rem;
+            text-decoration: none;
+            color: var(--primary-green);
+            font-weight: 600;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            font-size: 0.95rem;
+        }
+
+        .nav-menu li a:hover,
+        .nav-menu li a.active {
+            background: rgba(26, 95, 58, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .nav-menu li a.active {
+            background: var(--primary-green);
+            color: var(--gold);
+        }
+
+        .menu-toggle {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            cursor: pointer;
+            padding: 10px;
+        }
+
+        .menu-toggle span {
+            width: 25px;
+            height: 3px;
+            background: var(--primary-green);
+            border-radius: 2px;
+            transition: all 0.3s ease;
+        }
+
+        /* Header Styles */
+        header.page-header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: var(--white);
+            padding: 2rem 1rem;
+            text-align: center;
+            box-shadow: var(--shadow-lg);
+            position: relative;
+            overflow: hidden;
+        }
+
+        header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: pulse 4s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .logo {
+            font-size: 4rem;
+            margin-bottom: 0.5rem;
+            display: block;
+            animation: moon-glow 2s ease-in-out infinite;
+        }
+
+        @keyframes moon-glow {
+            0%, 100% { filter: drop-shadow(0 0 10px rgba(255,255,255,0.5)); }
+            50% { filter: drop-shadow(0 0 20px rgba(255,255,255,0.8)); }
+        }
+
+        header h1 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+        }
+
+        header .subtitle {
+            font-size: 1rem;
+            opacity: 0.9;
+            margin-bottom: 1rem;
+        }
+
+        .ramadhan-badge {
+            display: inline-block;
+            background: var(--gold-color);
+            color: var(--dark-text);
+            padding: 0.5rem 1.5rem;
+            border-radius: 25px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            box-shadow: var(--shadow);
+        }
+
+        /* Navigation Tabs */
+        .nav-tabs {
+            background: var(--white);
+            padding: 1rem;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-tab {
+            padding: 0.75rem 1.5rem;
+            border: 2px solid var(--primary-color);
+            background: var(--white);
+            color: var(--primary-color);
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .nav-tab:hover {
+            background: var(--light-bg);
+            transform: translateY(-2px);
+        }
+
+        .nav-tab.active {
+            background: var(--primary-color);
+            color: var(--white);
+            box-shadow: var(--shadow);
+        }
+
+        .nav-tab .icon {
+            font-size: 1.2rem;
+        }
+
+        /* Main Content */
+        main {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        /* Progress Summary Card */
+        .progress-summary {
+            background: var(--white);
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow-lg);
+            text-align: center;
+        }
+
+        .progress-summary h2 {
+            color: var(--primary-color);
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .progress-circle {
+            width: 150px;
+            height: 150px;
+            margin: 0 auto 1.5rem;
+            position: relative;
+        }
+
+        .progress-circle svg {
+            transform: rotate(-90deg);
+            width: 100%;
+            height: 100%;
+        }
+
+        .progress-circle circle {
+            fill: none;
+            stroke-width: 10;
+        }
+
+        .progress-circle .bg {
+            stroke: var(--light-bg);
+        }
+
+        .progress-circle .progress {
+            stroke: var(--success-color);
+            stroke-linecap: round;
+            transition: stroke-dashoffset 0.5s ease;
+        }
+
+        .progress-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+        }
+
+        .progress-percentage {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+
+        .progress-label {
+            font-size: 0.85rem;
+            color: var(--light-text);
+        }
+
+        .motivation-status {
+            background: var(--light-bg);
+            padding: 1rem;
+            border-radius: 10px;
+            margin-top: 1rem;
+        }
+
+        .motivation-status .emoji {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .motivation-status .message {
+            font-weight: 600;
+            color: var(--dark-text);
+            margin-bottom: 0.25rem;
+        }
+
+        .motivation-status .subtext {
+            font-size: 0.85rem;
+            color: var(--light-text);
+        }
+
+        /* Section Cards */
+        section {
+            background: var(--white);
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow);
+            display: none;
+        }
+
+        section.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        section h2 {
+            color: var(--primary-color);
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* Checklist Styles */
+        .checklist {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .checklist-item {
+            display: flex;
+            align-items: center;
+            padding: 1rem 1.5rem;
+            background: var(--light-bg);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .checklist-item:hover {
+            background: #e8f5e9;
+            transform: translateX(5px);
+        }
+
+        .checklist-item.checked {
+            background: #e8f5e9;
+            border-color: var(--success-color);
+        }
+
+        .checklist-item input[type="checkbox"] {
+            display: none;
+        }
+
+        .checkmark {
+            width: 28px;
+            height: 28px;
+            border: 2px solid var(--primary-color);
+            border-radius: 50%;
+            margin-right: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            flex-shrink: 0;
+        }
+
+        .checklist-item.checked .checkmark {
+            background: var(--success-color);
+            border-color: var(--success-color);
+        }
+
+        .checkmark::after {
+            content: '✓';
+            color: var(--white);
+            font-size: 1.2rem;
+            font-weight: 700;
+            display: none;
+        }
+
+        .checklist-item.checked .checkmark::after {
+            display: block;
+        }
+
+        .checklist-item label {
+            flex: 1;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 1rem;
+        }
+
+        .checklist-item.checked label {
+            text-decoration: line-through;
+            color: var(--light-text);
+        }
+
+        .prayer-time {
+            font-size: 0.85rem;
+            color: var(--light-text);
+            margin-left: 0.5rem;
+        }
+
+        /* Quran Tracker */
+        .quran-tracker {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .tracker-input {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .tracker-input label {
+            font-weight: 600;
+            color: var(--dark-text);
+            min-width: 150px;
+        }
+
+        .tracker-input input,
+        .tracker-input select {
+            padding: 0.75rem 1rem;
+            border: 2px solid var(--secondary-color);
+            border-radius: 8px;
+            font-size: 1rem;
+            flex: 1;
+            min-width: 150px;
+            transition: all 0.3s ease;
+        }
+
+        .tracker-input input:focus,
+        .tracker-input select:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 3px rgba(244, 162, 97, 0.2);
+        }
+
+        .quran-progress {
+            background: var(--light-bg);
+            padding: 1.5rem;
+            border-radius: 10px;
+        }
+
+        .progress-bar {
+            height: 20px;
+            background: #e0e0e0;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 1rem 0;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--success-color), var(--secondary-color));
+            border-radius: 10px;
+            transition: width 0.5s ease;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding-right: 0.5rem;
+            color: var(--white);
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .quran-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .stat-card {
+            background: var(--white);
+            padding: 1rem;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: var(--shadow);
+        }
+
+        .stat-card .value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+
+        .stat-card .label {
+            font-size: 0.85rem;
+            color: var(--light-text);
+            margin-top: 0.25rem;
+        }
+
+        /* Fasting Tracker */
+        .fasting-tracker {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .fasting-status {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1.5rem;
+            background: var(--light-bg);
+            border-radius: 10px;
+        }
+
+        .fasting-status .status-text {
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .fasting-status .status-emoji {
+            font-size: 2rem;
+        }
+
+        .fasting-days {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));
+            gap: 0.5rem;
+        }
+
+        .day-circle {
+            aspect-ratio: 1;
+            border-radius: 50%;
+            background: var(--light-bg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid var(--secondary-color);
+        }
+
+        .day-circle:hover {
+            transform: scale(1.1);
+        }
+
+        .day-circle.fasted {
+            background: var(--success-color);
+            color: var(--white);
+            border-color: var(--success-color);
+        }
+
+        .day-circle.today {
+            border-color: var(--accent-color);
+            border-width: 3px;
+        }
+
+        /* Dhikr Counter */
+        .dhikr-counter {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .dhikr-item {
+            background: var(--light-bg);
+            padding: 1.5rem;
+            border-radius: 10px;
+        }
+
+        .dhikr-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .dhikr-header h3 {
+            color: var(--primary-color);
+            font-size: 1.1rem;
+        }
+
+        .dhikr-count {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--accent-color);
+        }
+
+        .dhikr-controls {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .dhikr-btn {
+            flex: 1;
+            min-width: 100px;
+            padding: 1rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .dhikr-btn.add {
+            background: var(--success-color);
+            color: var(--white);
+        }
+
+        .dhikr-btn.add:hover {
+            background: #219a52;
+            transform: translateY(-2px);
+        }
+
+        .dhikr-btn.reset {
+            background: var(--error-color);
+            color: var(--white);
+        }
+
+        .dhikr-btn.reset:hover {
+            background: #c0392b;
+        }
+
+        /* Save Button */
+        .save-btn {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: var(--white);
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .save-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .save-btn:active {
+            transform: translateY(0);
+        }
+
+        .save-btn.saved {
+            background: var(--success-color);
+        }
+
+        /* Date Display */
+        .date-display {
+            background: var(--white);
+            padding: 1rem 2rem;
+            border-radius: 10px;
+            text-align: center;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow);
+        }
+
+        .date-display .day {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+
+        .date-display .date {
+            color: var(--light-text);
+            font-size: 0.95rem;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--primary-color);
+            color: var(--white);
+            text-align: center;
+            padding: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        footer p {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: var(--success-color);
+            color: var(--white);
+            padding: 1rem 2rem;
+            border-radius: 10px;
+            box-shadow: var(--shadow-lg);
+            transform: translateX(150%);
+            transition: transform 0.3s ease;
+            z-index: 1000;
+        }
+
+        .toast.show {
+            transform: translateX(0);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 1.5rem;
+            }
+
+            .logo {
+                font-size: 3rem;
+            }
+
+            .nav-tabs {
+                padding: 0.5rem;
+            }
+
+            .nav-tab {
+                padding: 0.5rem 1rem;
+                font-size: 0.85rem;
+            }
+
+            .progress-circle {
+                width: 120px;
+                height: 120px;
+            }
+
+            .progress-percentage {
+                font-size: 1.5rem;
+            }
+
+            main {
+                padding: 0 0.5rem;
+            }
+
+            section {
+                padding: 1.5rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .nav-tab span {
+                display: none;
+            }
+
+            .checklist-item {
+                padding: 0.75rem 1rem;
+            }
+
+            .tracker-input {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .tracker-input label {
+                min-width: auto;
+            }
+
+            .menu-toggle {
+                display: flex;
+            }
+
+            .nav-menu {
+                position: fixed;
+                top: 70px;
+                left: -100%;
+                width: 100%;
+                background: linear-gradient(135deg, var(--gold) 0%, var(--gold-dark) 100%);
+                flex-direction: column;
+                padding: 2rem;
+                gap: 1rem;
+                transition: left 0.3s ease;
+                box-shadow: var(--shadow-lg);
+            }
+
+            .nav-menu.active {
+                left: 0;
+            }
+
+            .nav-menu li a {
+                text-align: center;
+                padding: 1rem;
+                font-size: 1.1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <header class="nav-header">
+        <nav>
+            <a href="index.html" class="logo">
+                <span class="logo-icon">🌙</span>
+                <span class="logo-text">Ramadhan Portal</span>
+            </a>
+            
+            <div class="menu-toggle" id="menuToggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="jadwal-imsakiyah.html">Jadwal Imsakiyah</a></li>
+                <li><a href="doa-ramadhan.html">Doa Harian</a></li>
+                <li><a href="hitung-zikir.html">Hitung Dzikir</a></li>
+                <li><a href="todo-ramadhan.html" class="active">To-Do List</a></li>
+                <li><a href="kalkulator-zakat.html">Kalkulator Zakat</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Page Header -->
+    <header class="page-header">
+        <div class="header-content">
+            <span class="logo">🌙</span>
+            <h1>Ramadhan To-Do List</h1>
+            <p class="subtitle">Tracker Ibadah Harian untuk Meningkatkan Konsistensi</p>
+            <span class="ramadhan-badge">Ramadhan 1447 H / 2026 M</span>
+        </div>
+    </header>
+
+    <!-- Navigation Tabs -->
+    <nav class="nav-tabs">
+        <button class="nav-tab active" data-tab="shalat">
+            <span class="icon">🕌</span>
+            <span>Shalat Wajib</span>
+        </button>
+        <button class="nav-tab" data-tab="quran">
+            <span class="icon">📖</span>
+            <span>Baca Qur'an</span>
+        </button>
+        <button class="nav-tab" data-tab="puasa">
+            <span class="icon">🌅</span>
+            <span>Puasa</span>
+        </button>
+        <button class="nav-tab" data-tab="dzikir">
+            <span class="icon">📿</span>
+            <span>Dzikir</span>
+        </button>
+    </nav>
+
+    <main>
+        <!-- Date Display -->
+        <div class="date-display">
+            <div class="day" id="current-day">Senin</div>
+            <div class="date" id="current-date">10 Maret 2026</div>
+        </div>
+
+        <!-- Progress Summary -->
+        <section class="progress-summary" id="progress-section">
+            <h2>📊 Progress Hari Ini</h2>
+            <div class="progress-circle">
+                <svg>
+                    <circle class="bg" cx="75" cy="75" r="70"></circle>
+                    <circle class="progress" cx="75" cy="75" r="70" 
+                            stroke-dasharray="440" 
+                            stroke-dashoffset="440" 
+                            id="progress-circle"></circle>
+                </svg>
+                <div class="progress-text">
+                    <div class="progress-percentage" id="progress-percentage">0%</div>
+                    <div class="progress-label">Selesai</div>
+                </div>
+            </div>
+            <div class="motivation-status">
+                <div class="emoji" id="motivation-emoji">💪</div>
+                <div class="message" id="motivation-message">Mulai hari ini dengan semangat!</div>
+                <div class="subtext" id="motivation-subtext">Lengkapi ibadahmu untuk meraih pahala maksimal</div>
+            </div>
+        </section>
+
+        <!-- Shalat Section -->
+        <section class="active" id="shalat-section">
+            <h2>🕌 Shalat Wajib</h2>
+            <div class="checklist" id="shalat-checklist">
+                <div class="checklist-item" data-prayer="subuh">
+                    <input type="checkbox" id="subuh" name="prayer">
+                    <div class="checkmark"></div>
+                    <label for="subuh">
+                        Subuh
+                        <span class="prayer-time">04:43</span>
+                    </label>
+                </div>
+                <div class="checklist-item" data-prayer="dzuhur">
+                    <input type="checkbox" id="dzuhur" name="prayer">
+                    <div class="checkmark"></div>
+                    <label for="dzuhur">
+                        Dzuhur
+                        <span class="prayer-time">12:09</span>
+                    </label>
+                </div>
+                <div class="checklist-item" data-prayer="ashar">
+                    <input type="checkbox" id="ashar" name="prayer">
+                    <div class="checkmark"></div>
+                    <label for="ashar">
+                        Ashar
+                        <span class="prayer-time">15:12</span>
+                    </label>
+                </div>
+                <div class="checklist-item" data-prayer="maghrib">
+                    <input type="checkbox" id="maghrib" name="prayer">
+                    <div class="checkmark"></div>
+                    <label for="maghrib">
+                        Maghrib
+                        <span class="prayer-time">18:15</span>
+                    </label>
+                </div>
+                <div class="checklist-item" data-prayer="isya">
+                    <input type="checkbox" id="isya" name="prayer">
+                    <div class="checkmark"></div>
+                    <label for="isya">
+                        Isya
+                        <span class="prayer-time">19:24</span>
+                    </label>
+                </div>
+            </div>
+            <button class="save-btn" onclick="app.saveData('shalat')">
+                <span>💾</span>
+                <span>Simpan Progress Shalat</span>
+            </button>
+        </section>
+
+        <!-- Quran Section -->
+        <section id="quran-section">
+            <h2>📖 Baca Qur'an</h2>
+            <div class="quran-tracker">
+                <div class="tracker-input">
+                    <label for="quran-target">Target Harian:</label>
+                    <select id="quran-target">
+                        <option value="1">1 Juz</option>
+                        <option value="2">2 Juz</option>
+                        <option value="3">3 Juz</option>
+                        <option value="0.5">0.5 Juz</option>
+                        <option value="custom">Custom</option>
+                    </select>
+                </div>
+                <div class="tracker-input">
+                    <label for="quran-read">Sudah Baca:</label>
+                    <input type="number" id="quran-read" min="0" max="30" step="0.5" placeholder="Jumlah juz">
+                </div>
+                <div class="quran-progress">
+                    <h3>Progress Membaca</h3>
+                    <div class="progress-bar">
+                        <div class="progress-bar-fill" id="quran-progress-fill" style="width: 0%">0%</div>
+                    </div>
+                    <div class="quran-stats">
+                        <div class="stat-card">
+                            <div class="value" id="quran-total">0</div>
+                            <div class="label">Total Juz</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="value" id="quran-days">0</div>
+                            <div class="label">Hari Aktif</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="value" id="quran-average">0</div>
+                            <div class="label">Rata-rata/Hari</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <button class="save-btn" onclick="app.saveData('quran')">
+                <span>💾</span>
+                <span>Simpan Progress Qur'an</span>
+            </button>
+        </section>
+
+        <!-- Puasa Section -->
+        <section id="puasa-section">
+            <h2>🌅 Puasa Ramadhan</h2>
+            <div class="fasting-tracker">
+                <div class="fasting-status">
+                    <span class="status-text">Status Hari Ini</span>
+                    <span class="status-emoji" id="fasting-emoji">🌅</span>
+                </div>
+                <div class="tracker-input">
+                    <label for="fasting-status">Puasa Hari Ini:</label>
+                    <select id="fasting-status">
+                        <option value="yes">✅ Ya, Saya Puasa</option>
+                        <option value="no">❌ Tidak Puasa</option>
+                        <option value="qada">⏳ Qada' (Akan diganti)</option>
+                    </select>
+                </div>
+                <div class="quran-progress">
+                    <h3>Kalender Puasa</h3>
+                    <p style="color: var(--light-text); font-size: 0.9rem; margin-bottom: 1rem;">
+                        Klik hari untuk menandai puasa
+                    </p>
+                    <div class="fasting-days" id="fasting-days">
+                        <!-- Days will be generated by JS -->
+                    </div>
+                    <div class="quran-stats" style="margin-top: 1.5rem;">
+                        <div class="stat-card">
+                            <div class="value" id="fasting-total">0</div>
+                            <div class="label">Total Puasa</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="value" id="fasting-remaining">30</div>
+                            <div class="label">Sisa Hari</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="value" id="fasting-percent">0%</div>
+                            <div class="label">Progress</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <button class="save-btn" onclick="app.saveData('puasa')">
+                <span>💾</span>
+                <span>Simpan Progress Puasa</span>
+            </button>
+        </section>
+
+        <!-- Dzikir Section -->
+        <section id="dzikir-section">
+            <h2>📿 Dzikir Pagi & Petang</h2>
+            <div class="dhikr-counter">
+                <div class="dhikr-item">
+                    <div class="dhikr-header">
+                        <h3>Subhanallah</h3>
+                        <div class="dhikr-count" id="subhanallah-count">0</div>
+                    </div>
+                    <div class="dhikr-controls">
+                        <button class="dhikr-btn add" onclick="app.addDhikr('subhanallah')">+ Tambah</button>
+                        <button class="dhikr-btn reset" onclick="app.resetDhikr('subhanallah')">Reset</button>
+                    </div>
+                </div>
+                <div class="dhikr-item">
+                    <div class="dhikr-header">
+                        <h3>Alhamdulillah</h3>
+                        <div class="dhikr-count" id="alhamdulillah-count">0</div>
+                    </div>
+                    <div class="dhikr-controls">
+                        <button class="dhikr-btn add" onclick="app.addDhikr('alhamdulillah')">+ Tambah</button>
+                        <button class="dhikr-btn reset" onclick="app.resetDhikr('alhamdulillah')">Reset</button>
+                    </div>
+                </div>
+                <div class="dhikr-item">
+                    <div class="dhikr-header">
+                        <h3>Allahu Akbar</h3>
+                        <div class="dhikr-count" id="allahu-akbar-count">0</div>
+                    </div>
+                    <div class="dhikr-controls">
+                        <button class="dhikr-btn add" onclick="app.addDhikr('allahu-akbar')">+ Tambah</button>
+                        <button class="dhikr-btn reset" onclick="app.resetDhikr('allahu-akbar')">Reset</button>
+                    </div>
+                </div>
+                <div class="dhikr-item">
+                    <div class="dhikr-header">
+                        <h3>Astaghfirullah</h3>
+                        <div class="dhikr-count" id="astaghfirullah-count">0</div>
+                    </div>
+                    <div class="dhikr-controls">
+                        <button class="dhikr-btn add" onclick="app.addDhikr('astaghfirullah')">+ Tambah</button>
+                        <button class="dhikr-btn reset" onclick="app.resetDhikr('astaghfirullah')">Reset</button>
+                    </div>
+                </div>
+            </div>
+            <button class="save-btn" onclick="app.saveData('dzikir')">
+                <span>💾</span>
+                <span>Simpan Dzikir Hari Ini</span>
+            </button>
+        </section>
+    </main>
+
+    <footer>
+        <p>Ramadhan To-Do List © 2026 | Semoga ibadah kita diterima Allah SWT</p>
+    </footer>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast">
+        ✅ Data berhasil disimpan!
+    </div>
+
+    <script>
+        // Mobile Menu Toggle
+        const menuToggle = document.getElementById('menuToggle');
+        const navMenu = document.getElementById('navMenu');
+
+        if (menuToggle && navMenu) {
+            menuToggle.addEventListener('click', () => {
+                navMenu.classList.toggle('active');
+            });
+
+            // Close menu when clicking outside
+            document.addEventListener('click', (e) => {
+                if (!menuToggle.contains(e.target) && !navMenu.contains(e.target)) {
+                    navMenu.classList.remove('active');
+                }
+            });
+
+            // Close menu when clicking a link
+            navMenu.querySelectorAll('a').forEach(link => {
+                link.addEventListener('click', () => {
+                    navMenu.classList.remove('active');
+                });
+            });
+        }
+    </script>
+
+    <script>
+        /**
+         * Ramadhan To-Do List App
+         * Tracks daily ibadah progress during Ramadhan
+         */
+        const app = (function() {
+            // Configuration
+            const STORAGE_PREFIX = 'ramadhan_todo_';
+            const TOTAL_RAMADHAN_DAYS = 30;
+            
+            // State
+            let currentTab = 'shalat';
+            let dhikrCounts = {
+                'subhanallah': 0,
+                'alhamdulillah': 0,
+                'allahu-akbar': 0,
+                'astaghfirullah': 0
+            };
+
+            // Get today's date key
+            function getTodayKey() {
+                const today = new Date();
+                return `${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()}`;
+            }
+
+            // DOM Elements
+            const elements = {
+                navTabs: document.querySelectorAll('.nav-tab'),
+                sections: document.querySelectorAll('section'),
+                currentDay: document.getElementById('current-day'),
+                currentDate: document.getElementById('current-date'),
+                progressCircle: document.getElementById('progress-circle'),
+                progressPercentage: document.getElementById('progress-percentage'),
+                motivationEmoji: document.getElementById('motivation-emoji'),
+                motivationMessage: document.getElementById('motivation-message'),
+                motivationSubtext: document.getElementById('motivation-subtext'),
+                toast: document.getElementById('toast'),
+                quranTarget: document.getElementById('quran-target'),
+                quranRead: document.getElementById('quran-read'),
+                quranProgressFill: document.getElementById('quran-progress-fill'),
+                quranTotal: document.getElementById('quran-total'),
+                quranDays: document.getElementById('quran-days'),
+                quranAverage: document.getElementById('quran-average'),
+                fastingDays: document.getElementById('fasting-days'),
+                fastingStatus: document.getElementById('fasting-status'),
+                fastingEmoji: document.getElementById('fasting-emoji'),
+                fastingTotal: document.getElementById('fasting-total'),
+                fastingRemaining: document.getElementById('fasting-remaining'),
+                fastingPercent: document.getElementById('fasting-percent')
+            };
+
+            /**
+             * Initialize the application
+             */
+            function init() {
+                setupDateDisplay();
+                setupNavigation();
+                setupChecklistItems();
+                setupQuranTracker();
+                generateFastingCalendar();
+                loadData();
+                updateProgress();
+                setupDhikrCounter();
+            }
+
+            /**
+             * Setup date display
+             */
+            function setupDateDisplay() {
+                const today = new Date();
+                const options = { weekday: 'long' };
+                const dateOptions = { day: 'numeric', month: 'long', year: 'numeric' };
+                
+                elements.currentDay.textContent = today.toLocaleDateString('id-ID', options);
+                elements.currentDate.textContent = today.toLocaleDateString('id-ID', dateOptions);
+            }
+
+            /**
+             * Setup navigation tabs
+             */
+            function setupNavigation() {
+                elements.navTabs.forEach(tab => {
+                    tab.addEventListener('click', () => {
+                        const targetTab = tab.dataset.tab;
+                        switchTab(targetTab);
+                    });
+                });
+            }
+
+            /**
+             * Switch active tab
+             */
+            function switchTab(tabName) {
+                currentTab = tabName;
+                
+                // Update nav tabs
+                elements.navTabs.forEach(tab => {
+                    tab.classList.toggle('active', tab.dataset.tab === tabName);
+                });
+
+                // Update sections
+                elements.sections.forEach(section => {
+                    section.classList.remove('active');
+                    if (section.id === `${tabName}-section` || 
+                        (tabName === 'progress' && section.id === 'progress-section')) {
+                        section.classList.add('active');
+                    }
+                });
+
+                // Show progress section always
+                document.getElementById('progress-section').classList.add('active');
+            }
+
+            /**
+             * Setup checklist items
+             */
+            function setupChecklistItems() {
+                const checklistItems = document.querySelectorAll('.checklist-item');
+                
+                checklistItems.forEach(item => {
+                    item.addEventListener('click', () => {
+                        const checkbox = item.querySelector('input[type="checkbox"]');
+                        checkbox.checked = !checkbox.checked;
+                        item.classList.toggle('checked', checkbox.checked);
+                        updateProgress();
+                    });
+                });
+            }
+
+            /**
+             * Setup Quran tracker
+             */
+            function setupQuranTracker() {
+                elements.quranRead.addEventListener('input', updateQuranProgress);
+                elements.quranTarget.addEventListener('change', updateQuranProgress);
+            }
+
+            /**
+             * Update Quran progress
+             */
+            function updateQuranProgress() {
+                const target = parseFloat(elements.quranTarget.value) || 1;
+                const read = parseFloat(elements.quranRead.value) || 0;
+                const percentage = Math.min((read / target) * 100, 100);
+
+                elements.quranProgressFill.style.width = `${percentage}%`;
+                elements.quranProgressFill.textContent = `${Math.round(percentage)}%`;
+            }
+
+            /**
+             * Generate fasting calendar
+             */
+            function generateFastingCalendar() {
+                elements.fastingDays.innerHTML = '';
+                const today = new Date();
+                const currentDay = today.getDate();
+
+                for (let i = 1; i <= TOTAL_RAMADHAN_DAYS; i++) {
+                    const dayCircle = document.createElement('div');
+                    dayCircle.className = 'day-circle';
+                    dayCircle.textContent = i;
+                    dayCircle.dataset.day = i;
+
+                    if (i === currentDay && currentDay <= TOTAL_RAMADHAN_DAYS) {
+                        dayCircle.classList.add('today');
+                    }
+
+                    dayCircle.addEventListener('click', () => {
+                        dayCircle.classList.toggle('fasted');
+                        updateFastingStats();
+                    });
+
+                    elements.fastingDays.appendChild(dayCircle);
+                }
+            }
+
+            /**
+             * Update fasting stats
+             */
+            function updateFastingStats() {
+                const fastedDays = document.querySelectorAll('.day-circle.fasted').length;
+                const remaining = TOTAL_RAMADHAN_DAYS - fastedDays;
+                const percentage = Math.round((fastedDays / TOTAL_RAMADHAN_DAYS) * 100);
+
+                elements.fastingTotal.textContent = fastedDays;
+                elements.fastingRemaining.textContent = remaining;
+                elements.fastingPercent.textContent = `${percentage}%`;
+            }
+
+            /**
+             * Setup dhikr counter
+             */
+            function setupDhikrCounter() {
+                // Load saved dhikr counts
+                const savedDhikr = localStorage.getItem(`${STORAGE_PREFIX}dhikr_${getTodayKey()}`);
+                if (savedDhikr) {
+                    dhikrCounts = JSON.parse(savedDhikr);
+                    updateDhikrDisplay();
+                }
+            }
+
+            /**
+             * Add dhikr count
+             */
+            function addDhikr(type) {
+                dhikrCounts[type] += 1;
+                updateDhikrDisplay();
+                saveDhikrLocally();
+            }
+
+            /**
+             * Reset dhikr count
+             */
+            function resetDhikr(type) {
+                dhikrCounts[type] = 0;
+                updateDhikrDisplay();
+                saveDhikrLocally();
+            }
+
+            /**
+             * Update dhikr display
+             */
+            function updateDhikrDisplay() {
+                Object.keys(dhikrCounts).forEach(type => {
+                    const element = document.getElementById(`${type}-count`);
+                    if (element) {
+                        element.textContent = dhikrCounts[type];
+                    }
+                });
+            }
+
+            /**
+             * Save dhikr locally
+             */
+            function saveDhikrLocally() {
+                localStorage.setItem(`${STORAGE_PREFIX}dhikr_${getTodayKey()}`, JSON.stringify(dhikrCounts));
+            }
+
+            /**
+             * Load saved data
+             */
+            function loadData() {
+                const todayKey = getTodayKey();
+
+                // Load shalat data
+                const shalatData = JSON.parse(localStorage.getItem(`${STORAGE_PREFIX}shalat_${todayKey}`) || '[]');
+                shalatData.forEach(prayer => {
+                    const item = document.querySelector(`[data-prayer="${prayer}"]`);
+                    if (item) {
+                        item.querySelector('input').checked = true;
+                        item.classList.add('checked');
+                    }
+                });
+
+                // Load Quran data
+                const quranData = JSON.parse(localStorage.getItem(`${STORAGE_PREFIX}quran_${todayKey}`) || 'null');
+                if (quranData) {
+                    elements.quranTarget.value = quranData.target || '1';
+                    elements.quranRead.value = quranData.read || 0;
+                    updateQuranProgress();
+                }
+
+                // Load fasting data
+                const fastingData = JSON.parse(localStorage.getItem(`${STORAGE_PREFIX}puasa_${todayKey}`) || 'null');
+                if (fastingData) {
+                    elements.fastingStatus.value = fastingData.status || 'yes';
+                    if (fastingData.fastedDays) {
+                        fastingData.fastedDays.forEach(day => {
+                            const dayCircle = document.querySelector(`[data-day="${day}"]`);
+                            if (dayCircle) {
+                                dayCircle.classList.add('fasted');
+                            }
+                        });
+                        updateFastingStats();
+                    }
+                    updateFastingEmoji();
+                }
+
+                // Load dhikr data (already loaded in setupDhikrCounter)
+            }
+
+            /**
+             * Save data
+             */
+            function saveData(type) {
+                const todayKey = getTodayKey();
+
+                if (type === 'shalat') {
+                    const prayers = [];
+                    document.querySelectorAll('[data-prayer] input:checked').forEach(checkbox => {
+                        const item = checkbox.closest('[data-prayer]');
+                        prayers.push(item.dataset.prayer);
+                    });
+                    localStorage.setItem(`${STORAGE_PREFIX}shalat_${todayKey}`, JSON.stringify(prayers));
+                }
+
+                if (type === 'quran') {
+                    const quranData = {
+                        target: elements.quranTarget.value,
+                        read: parseFloat(elements.quranRead.value) || 0
+                    };
+                    localStorage.setItem(`${STORAGE_PREFIX}quran_${todayKey}`, JSON.stringify(quranData));
+                }
+
+                if (type === 'puasa') {
+                    const fastedDays = [];
+                    document.querySelectorAll('.day-circle.fasted').forEach(day => {
+                        fastedDays.push(parseInt(day.dataset.day));
+                    });
+                    const fastingData = {
+                        status: elements.fastingStatus.value,
+                        fastedDays: fastedDays
+                    };
+                    localStorage.setItem(`${STORAGE_PREFIX}puasa_${todayKey}`, JSON.stringify(fastingData));
+                    updateFastingEmoji();
+                }
+
+                if (type === 'dzikir') {
+                    saveDhikrLocally();
+                }
+
+                updateProgress();
+                showToast();
+            }
+
+            /**
+             * Update fasting emoji based on status
+             */
+            function updateFastingEmoji() {
+                const status = elements.fastingStatus.value;
+                switch(status) {
+                    case 'yes':
+                        elements.fastingEmoji.textContent = '✅';
+                        break;
+                    case 'no':
+                        elements.fastingEmoji.textContent = '❌';
+                        break;
+                    case 'qada':
+                        elements.fastingEmoji.textContent = '⏳';
+                        break;
+                }
+            }
+
+            /**
+             * Update overall progress
+             */
+            function updateProgress() {
+                let totalItems = 0;
+                let completedItems = 0;
+
+                // Shalat (5 prayers)
+                totalItems += 5;
+                document.querySelectorAll('[data-prayer] input:checked').forEach(() => {
+                    completedItems++;
+                });
+
+                // Quran (1 item if read > 0)
+                totalItems += 1;
+                if (parseFloat(elements.quranRead.value) > 0) {
+                    completedItems++;
+                }
+
+                // Puasa (1 item if fasting today)
+                totalItems += 1;
+                if (elements.fastingStatus.value === 'yes') {
+                    completedItems++;
+                }
+
+                // Dzikir (4 types, count if > 0)
+                totalItems += 4;
+                Object.values(dhikrCounts).forEach(count => {
+                    if (count > 0) completedItems++;
+                });
+
+                const percentage = Math.round((completedItems / totalItems) * 100);
+                
+                // Update progress circle
+                const circumference = 2 * Math.PI * 70;
+                const offset = circumference - (percentage / 100) * circumference;
+                elements.progressCircle.style.strokeDashoffset = offset;
+                elements.progressPercentage.textContent = `${percentage}%`;
+
+                // Update motivation
+                updateMotivation(percentage);
+            }
+
+            /**
+             * Update motivation message
+             */
+            function updateMotivation(percentage) {
+                const motivations = [
+                    { min: 0, emoji: '💪', message: 'Mulai hari ini dengan semangat!', subtext: 'Lengkapi ibadahmu untuk meraih pahala maksimal' },
+                    { min: 25, emoji: '🌟', message: 'Bagus! Terus tingkatkan!', subtext: 'Setiap ibadah bernilai di sisi Allah' },
+                    { min: 50, emoji: '🎯', message: 'Hebat! Kamu sudah setengah jalan!', subtext: 'Pertahankan konsistensimu' },
+                    { min: 75, emoji: '🏆', message: 'Masya Allah! Progress yang luar biasa!', subtext: 'Sedikit lagi menuju target harian' },
+                    { min: 100, emoji: '🎉', message: 'Alhamdulillah! Semua ibadah hari ini lengkap!', subtext: 'Semoga Allah menerima semua amal kita' }
+                ];
+
+                const motivation = motivations.reduce((prev, curr) => {
+                    return percentage >= curr.min ? curr : prev;
+                });
+
+                elements.motivationEmoji.textContent = motivation.emoji;
+                elements.motivationMessage.textContent = motivation.message;
+                elements.motivationSubtext.textContent = motivation.subtext;
+            }
+
+            /**
+             * Show toast notification
+             */
+            function showToast() {
+                elements.toast.classList.add('show');
+                setTimeout(() => {
+                    elements.toast.classList.remove('show');
+                }, 3000);
+            }
+
+            // Public API
+            return {
+                init,
+                saveData,
+                addDhikr,
+                resetDhikr
+            };
+        })();
+
+        // Initialize app when DOM is ready
+        document.addEventListener('DOMContentLoaded', app.init);
+    </script>
+</body>
+</html>

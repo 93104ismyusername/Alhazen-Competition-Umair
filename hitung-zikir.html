@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hitung Dzikir - Ramadhan Portal</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-green: #1a5f3a;
+            --secondary-green: #2d8b5e;
+            --gold: #f1c40f;
+            --gold-dark: #f39c12;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a5f3a 0%, #2d8b5e 50%, #1a5f3a 100%);
+            min-height: 100vh;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        /* Navigation Styles */
+        header.nav-header {
+            background: linear-gradient(135deg, var(--gold) 0%, var(--gold-dark) 100%);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        nav {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            text-decoration: none;
+            color: var(--primary-green);
+        }
+
+        .logo-icon {
+            font-size: 2rem;
+        }
+
+        .logo-text {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 0.5rem;
+            align-items: center;
+        }
+
+        .nav-menu li a {
+            display: block;
+            padding: 0.75rem 1.25rem;
+            text-decoration: none;
+            color: var(--primary-green);
+            font-weight: 600;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            font-size: 0.95rem;
+        }
+
+        .nav-menu li a:hover,
+        .nav-menu li a.active {
+            background: rgba(26, 95, 58, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .nav-menu li a.active {
+            background: var(--primary-green);
+            color: var(--gold);
+        }
+
+        .menu-toggle {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            cursor: pointer;
+            padding: 10px;
+        }
+
+        .menu-toggle span {
+            width: 25px;
+            height: 3px;
+            background: var(--primary-green);
+            border-radius: 2px;
+            transition: all 0.3s ease;
+        }
+
+        /* Header */
+        header.page-header {
+            background: linear-gradient(135deg, var(--gold) 0%, var(--gold-dark) 100%);
+            color: var(--primary-green);
+            text-align: center;
+            padding: 40px 20px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+        }
+
+        header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        main {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: calc(100vh - 200px);
+            width: 100%;
+            padding: 40px 20px;
+        }
+
+        section.counter-container {
+            background: linear-gradient(145deg, #ffffff 0%, #fef5e7 100%);
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            width: 100%;
+            max-width: 500px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            border-left: 6px solid #f39c12;
+        }
+
+        .counter-display {
+            margin-bottom: 30px;
+        }
+
+        .counter-label {
+            font-size: 1.1rem;
+            color: #555;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .counter-number {
+            font-size: 5rem;
+            font-weight: 700;
+            color: #1a5f3a;
+            display: inline-block;
+            transition: transform 0.15s ease;
+        }
+
+        .counter-number.animate {
+            transform: scale(1.1);
+        }
+
+        .target-display {
+            background: #f8f9fa;
+            color: #333;
+            padding: 15px 30px;
+            margin-bottom: 30px;
+            border-radius: 12px;
+            display: inline-block;
+            border-left: 4px solid #2d8b5e;
+        }
+
+        .target-display span {
+            font-size: 1rem;
+            font-weight: 600;
+        }
+
+        .target-display .target-number {
+            font-size: 1.5rem;
+            margin-left: 10px;
+            font-weight: 700;
+            color: #1a5f3a;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 14px 32px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-family: inherit;
+        }
+
+        .btn-add {
+            background: linear-gradient(135deg, #1a5f3a 0%, #2d8b5e 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(26, 95, 58, 0.4);
+        }
+
+        .btn-add:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(26, 95, 58, 0.5);
+        }
+
+        .btn-add:active {
+            transform: translateY(0);
+        }
+
+        .btn-reset {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(231, 76, 60, 0.4);
+        }
+
+        .btn-reset:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(231, 76, 60, 0.5);
+        }
+
+        .btn-reset:active {
+            transform: translateY(0);
+        }
+
+        .notification-area {
+            min-height: 60px;
+            margin-top: 25px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .badge {
+            background: linear-gradient(135deg, #f1c40f 0%, #f39c12 100%);
+            color: #1a5f3a;
+            padding: 14px 28px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            border-radius: 12px;
+            display: none;
+            animation: pulse 1.5s ease-in-out infinite;
+            box-shadow: 0 4px 15px rgba(241, 196, 15, 0.4);
+        }
+
+        .badge.show {
+            display: block;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        @keyframes confetti {
+            0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+        }
+
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            background: #f1c40f;
+            animation: confetti 2s ease-out forwards;
+            pointer-events: none;
+            z-index: 100;
+        }
+
+        footer {
+            background: rgba(0, 0, 0, 0.2);
+            color: #fff;
+            text-align: center;
+            padding: 30px 20px;
+            margin-top: 40px;
+        }
+
+        footer p {
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+
+        @media (max-width: 480px) {
+            header.page-header {
+                padding: 30px 15px;
+            }
+
+            header.page-header h1 {
+                font-size: 1.8rem;
+            }
+
+            header.page-header p {
+                font-size: 1rem;
+            }
+
+            .counter-number {
+                font-size: 4rem;
+            }
+
+            section.counter-container {
+                padding: 30px 20px;
+            }
+
+            .btn {
+                padding: 12px 24px;
+                font-size: 1rem;
+            }
+
+            .menu-toggle {
+                display: flex;
+            }
+
+            .nav-menu {
+                position: fixed;
+                top: 70px;
+                left: -100%;
+                width: 100%;
+                background: linear-gradient(135deg, var(--gold) 0%, var(--gold-dark) 100%);
+                flex-direction: column;
+                padding: 2rem;
+                gap: 1rem;
+                transition: left 0.3s ease;
+                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            }
+
+            .nav-menu.active {
+                left: 0;
+            }
+
+            .nav-menu li a {
+                text-align: center;
+                padding: 1rem;
+                font-size: 1.1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <header class="nav-header">
+        <nav>
+            <a href="index.html" class="logo">
+                <span class="logo-icon">🌙</span>
+                <span class="logo-text">Ramadhan Portal</span>
+            </a>
+            
+            <div class="menu-toggle" id="menuToggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="jadwal-imsakiyah.html">Jadwal Imsakiyah</a></li>
+                <li><a href="doa-ramadhan.html">Doa Harian</a></li>
+                <li><a href="hitung-zikir.html" class="active">Hitung Dzikir</a></li>
+                <li><a href="todo-ramadhan.html">To-Do List</a></li>
+                <li><a href="kalkulator-zakat.html">Kalkulator Zakat</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Page Header -->
+    <header class="page-header">
+        <h1>🕌 Hitung Dzikir Harian</h1>
+        <p>Hitung dzikir harian Anda dengan mudah</p>
+    </header>
+
+    <main>
+        <section class="counter-container">
+            <div class="counter-display">
+                <p class="counter-label">Jumlah Dzikir</p>
+                <span class="counter-number" id="counter">0</span>
+            </div>
+
+            <div class="target-display">
+                <span>Target:</span>
+                <span class="target-number" id="target">33</span>
+            </div>
+
+            <div class="buttons">
+                <button class="btn btn-add" id="btnAdd">+ Tambah</button>
+                <button class="btn btn-reset" id="btnReset">↺ Reset</button>
+            </div>
+
+            <div class="notification-area">
+                <div class="badge" id="badge">🎉 Target Tercapai!</div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>🕌 Semoga amal ibadah kita diterima oleh Allah SWT</p>
+    </footer>
+
+    <script>
+        // Mobile Menu Toggle
+        const menuToggle = document.getElementById('menuToggle');
+        const navMenu = document.getElementById('navMenu');
+
+        if (menuToggle && navMenu) {
+            menuToggle.addEventListener('click', () => {
+                navMenu.classList.toggle('active');
+            });
+
+            // Close menu when clicking outside
+            document.addEventListener('click', (e) => {
+                if (!menuToggle.contains(e.target) && !navMenu.contains(e.target)) {
+                    navMenu.classList.remove('active');
+                }
+            });
+
+            // Close menu when clicking a link
+            navMenu.querySelectorAll('a').forEach(link => {
+                link.addEventListener('click', () => {
+                    navMenu.classList.remove('active');
+                });
+            });
+        }
+    </script>
+
+    <script>
+        // State
+        let count = 0;
+        const target = 33;
+        let targetReached = false;
+
+        // DOM Elements
+        const counterElement = document.getElementById('counter');
+        const targetElement = document.getElementById('target');
+        const btnAdd = document.getElementById('btnAdd');
+        const btnReset = document.getElementById('btnReset');
+        const badge = document.getElementById('badge');
+
+        // Set target display
+        targetElement.textContent = target;
+
+        // Confetti effect
+        function createConfetti() {
+            const colors = ['#10b981', '#6366f1', '#f59e0b', '#ef4444', '#ec4899', '#34d399'];
+            for (let i = 0; i < 50; i++) {
+                setTimeout(() => {
+                    const confetti = document.createElement('div');
+                    confetti.className = 'confetti';
+                    confetti.style.left = Math.random() * 100 + 'vw';
+                    confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+                    confetti.style.animationDuration = (Math.random() * 2 + 1) + 's';
+                    document.body.appendChild(confetti);
+                    
+                    setTimeout(() => confetti.remove(), 3000);
+                }, i * 30);
+            }
+        }
+
+        // Functions
+        function updateCounter() {
+            counterElement.textContent = count;
+
+            // Add animation
+            counterElement.classList.add('animate');
+            setTimeout(() => {
+                counterElement.classList.remove('animate');
+            }, 150);
+
+            // Check if target reached
+            if (count >= target && count !== 0 && !targetReached) {
+                badge.classList.add('show');
+                targetReached = true;
+                createConfetti();
+            } else if (count < target) {
+                badge.classList.remove('show');
+                targetReached = false;
+            }
+        }
+
+        function addCount() {
+            count++;
+            updateCounter();
+        }
+
+        function resetCount() {
+            count = 0;
+            targetReached = false;
+            badge.classList.remove('show');
+            updateCounter();
+        }
+
+        // Event Listeners
+        btnAdd.addEventListener('click', addCount);
+        btnReset.addEventListener('click', resetCount);
+
+        // Keyboard support
+        document.addEventListener('keydown', (e) => {
+            if (e.code === 'Space' || e.code === 'Enter') {
+                e.preventDefault();
+                addCount();
+            }
+            if (e.code === 'KeyR') {
+                resetCount();
+            }
+        });
+
+        // Initialize
+        updateCounter();
+    </script>
+</body>
+</html>

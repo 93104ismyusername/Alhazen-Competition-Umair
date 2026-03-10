@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doa Harian - Ramadhan Portal</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-green: #1a5f3a;
+            --secondary-green: #2d8b5e;
+            --gold: #f1c40f;
+            --gold-dark: #f39c12;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a5f3a 0%, #2d8b5e 50%, #1a5f3a 100%);
+            min-height: 100vh;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        /* Navigation Styles */
+        header {
+            background: linear-gradient(135deg, var(--gold) 0%, var(--gold-dark) 100%);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        nav {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            text-decoration: none;
+            color: var(--primary-green);
+        }
+
+        .logo-icon {
+            font-size: 2rem;
+        }
+
+        .logo-text {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 0.5rem;
+            align-items: center;
+        }
+
+        .nav-menu li a {
+            display: block;
+            padding: 0.75rem 1.25rem;
+            text-decoration: none;
+            color: var(--primary-green);
+            font-weight: 600;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            font-size: 0.95rem;
+        }
+
+        .nav-menu li a:hover,
+        .nav-menu li a.active {
+            background: rgba(26, 95, 58, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .nav-menu li a.active {
+            background: var(--primary-green);
+            color: var(--gold);
+        }
+
+        .menu-toggle {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            cursor: pointer;
+            padding: 10px;
+        }
+
+        .menu-toggle span {
+            width: 25px;
+            height: 3px;
+            background: var(--primary-green);
+            border-radius: 2px;
+            transition: all 0.3s ease;
+        }
+
+        /* Page Header */
+        .page-header {
+            background: linear-gradient(135deg, var(--gold) 0%, var(--gold-dark) 100%);
+            color: var(--primary-green);
+            text-align: center;
+            padding: 40px 20px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+        }
+
+        header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        /* Main Content */
+        main {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        /* Sections */
+        section {
+            background: #fff;
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            border-left: 6px solid;
+        }
+
+        section.sahur {
+            border-left-color: #3498db;
+            background: linear-gradient(145deg, #ffffff 0%, #e8f4f8 100%);
+        }
+
+        section.buka {
+            border-left-color: #f39c12;
+            background: linear-gradient(145deg, #ffffff 0%, #fef5e7 100%);
+        }
+
+        section h2 {
+            font-size: 2rem;
+            margin-bottom: 25px;
+            color: #1a5f3a;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        section.sahur h2 {
+            color: #2980b9;
+        }
+
+        section.buka h2 {
+            color: #d68910;
+        }
+
+        /* Doa Articles */
+        article {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        article:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        article:last-child {
+            margin-bottom: 0;
+        }
+
+        .doa-title {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #1a5f3a;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #2d8b5e;
+        }
+
+        .arabic {
+            font-family: 'Traditional Arabic', 'Scheherazade', 'Arial', sans-serif;
+            font-size: 2rem;
+            text-align: right;
+            color: #1a5f3a;
+            margin-bottom: 15px;
+            line-height: 2.2;
+            direction: rtl;
+        }
+
+        .transliteration {
+            font-size: 1rem;
+            color: #555;
+            font-style: italic;
+            margin-bottom: 15px;
+            line-height: 1.8;
+        }
+
+        .translation {
+            font-size: 1rem;
+            color: #333;
+            line-height: 1.8;
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            border-left: 4px solid #2d8b5e;
+        }
+
+        /* Footer */
+        footer {
+            background: rgba(0, 0, 0, 0.2);
+            color: #fff;
+            text-align: center;
+            padding: 30px 20px;
+            margin-top: 40px;
+        }
+
+        footer p {
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 1.8rem;
+            }
+
+            header p {
+                font-size: 1rem;
+            }
+
+            main {
+                padding: 20px 15px;
+            }
+
+            section {
+                padding: 25px;
+            }
+
+            section h2 {
+                font-size: 1.5rem;
+            }
+
+            .arabic {
+                font-size: 1.6rem;
+            }
+
+            .doa-title {
+                font-size: 1.1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            header {
+                padding: 30px 15px;
+            }
+
+            header h1 {
+                font-size: 1.5rem;
+            }
+
+            section {
+                padding: 20px;
+                border-radius: 15px;
+            }
+
+            section h2 {
+                font-size: 1.3rem;
+            }
+
+            .arabic {
+                font-size: 1.4rem;
+            }
+
+            .doa-title {
+                font-size: 1rem;
+            }
+
+            .transliteration,
+            .translation {
+                font-size: 0.9rem;
+            }
+
+            .menu-toggle {
+                display: flex;
+            }
+
+            .nav-menu {
+                position: fixed;
+                top: 70px;
+                left: -100%;
+                width: 100%;
+                background: linear-gradient(135deg, var(--gold) 0%, var(--gold-dark) 100%);
+                flex-direction: column;
+                padding: 2rem;
+                gap: 1rem;
+                transition: left 0.3s ease;
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            }
+
+            .nav-menu.active {
+                left: 0;
+            }
+
+            .nav-menu li a {
+                text-align: center;
+                padding: 1rem;
+                font-size: 1.1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <header>
+        <nav>
+            <a href="index.html" class="logo">
+                <span class="logo-icon">🌙</span>
+                <span class="logo-text">Ramadhan Portal</span>
+            </a>
+            
+            <div class="menu-toggle" id="menuToggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="jadwal-imsakiyah.html">Jadwal Imsakiyah</a></li>
+                <li><a href="doa-ramadhan.html" class="active">Doa Harian</a></li>
+                <li><a href="hitung-zikir.html">Hitung Dzikir</a></li>
+                <li><a href="todo-ramadhan.html">To-Do List</a></li>
+                <li><a href="kalkulator-zakat.html">Kalkulator Zakat</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Page Header -->
+    <div class="page-header">
+        <h1>🌙 Doa Ramadhan</h1>
+        <p>Koleksi Doa Buka Puasa & Sahur</p>
+    </div>
+
+    <main>
+        <!-- Section Sahur -->
+        <section class="sahur">
+            <h2>🌅 Doa Sahur</h2>
+            
+            <article>
+                <h3 class="doa-title">Niat Puasa Ramadhan</h3>
+                <p class="arabic">نَوَيْتُ صَوْمَ غَدٍ مِنْ شَهْرِ رَمَضَانَ فَرْضًا لِلَّهِ تَعَالَى</p>
+                <p class="transliteration"><em>Nawaitu shauma ghadin min syahri ramadhana fardhan lillahi ta'ala.</em></p>
+                <p class="translation"><strong>Artinya:</strong> "Aku niat berpuasa esok hari di bulan Ramadhan karena Allah Ta'ala."</p>
+            </article>
+
+            <article>
+                <h3 class="doa-title">Doa Makan Sahur</h3>
+                <p class="arabic">اَللّٰهُمَّ بَارِكْ لَنَا فِيْمَا رَزَقْتَنَا وَقِنَا عَذَابَ النَّارِ</p>
+                <p class="transliteration"><em>Allahumma barik lana fiima razaqtana wa qina 'adzaban naar.</em></p>
+                <p class="translation"><strong>Artinya:</strong> "Ya Allah, berkahilah kami dalam rezeki yang telah Engkau berikan kepada kami dan peliharalah kami dari siksa api neraka."</p>
+            </article>
+        </section>
+
+        <!-- Section Buka Puasa -->
+        <section class="buka">
+            <h2>🌆 Doa Buka Puasa</h2>
+            
+            <article>
+                <h3 class="doa-title">Doa Buka Puasa (Umum)</h3>
+                <p class="arabic">اَللّٰهُمَّ لَكَ صُمْتُ وَبِكَ آمَنْتُ وَعَلَى رِزْقِكَ أَفْطَرْتُ بِرَحْمَتِكَ يَا اَرْحَمَ الرَّحِمِيْنَ</p>
+                <p class="transliteration"><em>Allahumma laka shumtu wa bika amantu wa 'ala rizqika afthartu bi rahmatika ya arhamar rahimin.</em></p>
+                <p class="translation"><strong>Artinya:</strong> "Ya Allah, untuk-Mu aku berpuasa, kepada-Mu aku beriman, dan dengan rezeki-Mu aku berbuka. Dengan rahmat-Mu, wahai Dzat Yang Maha Penyayang."</p>
+            </article>
+
+            <article>
+                <h3 class="doa-title">Doa Buka Puasa (Sunnah)</h3>
+                <p class="arabic">ذَهَبَ الظَّمَأُ وَابْتَلَّتِ الْعُرُوقُ وَثَبَتَ الأَجْرُ إِنْ شَاءَ اللَّهُ</p>
+                <p class="transliteration"><em>Dzahabadh-dhama'u wabtallatil 'uruqu wa tsabatal ajru insyaallah.</em></p>
+                <p class="translation"><strong>Artinya:</strong> "Telah hilang dahaga, telah basah tenggorokan, dan telah tetap pahala insya Allah."</p>
+            </article>
+
+            <article>
+                <h3 class="doa-title">Doa Setelah Makan</h3>
+                <p class="arabic">اَلْحَمْدُ لِلَّهِ الَّذِيْ أَطْعَمَنَا وَسَقَانَا وَجَعَلَنَا مِنَ الْمُسْلِمِيْنَ</p>
+                <p class="transliteration"><em>Alhamdulillahi alladzi ath'amana wa saqana wa ja'alana minal muslimin.</em></p>
+                <p class="translation"><strong>Artinya:</strong> "Segala puji bagi Allah yang telah memberi makan dan minum kepada kami, dan menjadikan kami termasuk dari orang-orang Muslim."</p>
+            </article>
+        </section>
+    </main>
+
+    <footer>
+        <p>🕌 Semoga amal ibadah puasa kita diterima oleh Allah SWT</p>
+        <p>Ramadhan Mubarak</p>
+    </footer>
+
+    <script>
+        // Mobile Menu Toggle
+        const menuToggle = document.getElementById('menuToggle');
+        const navMenu = document.getElementById('navMenu');
+
+        if (menuToggle && navMenu) {
+            menuToggle.addEventListener('click', () => {
+                navMenu.classList.toggle('active');
+            });
+
+            // Close menu when clicking outside
+            document.addEventListener('click', (e) => {
+                if (!menuToggle.contains(e.target) && !navMenu.contains(e.target)) {
+                    navMenu.classList.remove('active');
+                }
+            });
+
+            // Close menu when clicking a link
+            navMenu.querySelectorAll('a').forEach(link => {
+                link.addEventListener('click', () => {
+                    navMenu.classList.remove('active');
+                });
+            });
+        }
+    </script>
+</body>
+</html>
